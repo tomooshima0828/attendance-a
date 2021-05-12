@@ -23,6 +23,15 @@ ActiveRecord::Schema.define(version: 20210512071430) do
     t.datetime "finished_at_changed"
     t.datetime "estimated_overtime_hours"
     t.string "business_process_content"
+    t.boolean "next_day_overtime", default: false
+    t.boolean "next_day_attendance", default: false
+    t.integer "overtime_request_superior", default: 0, null: false
+    t.string "overtime_response_superior"
+    t.integer "working_hours_request_superior", default: 0, null: false
+    t.string "working_hours_response_superior"
+    t.integer "one_month_request_superior", default: 0, null: false
+    t.string "one_month_response_superior"
+    t.boolean "change", default: false
     t.datetime "year_starting"
     t.datetime "year_ending"
     t.integer "user_id"
