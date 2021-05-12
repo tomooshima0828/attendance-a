@@ -1,22 +1,5 @@
 Rails.application.routes.draw do
-  get 'branch_offices/index'
-
-  get 'working_employees/index'
-
-  get 'static_pages/top'
-
-  get 'sessions/new'
-
-  get 'attendances/edit_one_month'
-
-  get 'users/index'
-
-  get 'users/new'
-
-  get 'users/show'
-
-  get 'users/edit'
-
+  
   root 'static_pages#top'
   get '/signup', to: 'users#new'
 

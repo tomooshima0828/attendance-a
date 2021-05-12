@@ -1,2 +1,60 @@
-<h1>BranchOffices#index</h1>
-<p>Find me in app/views/branch_offices/index.html.erb</p>
+<% provide(:title, 'Branch Offices') %>
+<% provide(:button_text, '追加') %>
+<h1>拠点一覧</h1>
+<div>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th></th>
+        <th></th>
+        <th class="center">拠点番号</th>
+        <th class="center">拠点名</th>
+        <th class="center">勤怠種類</th>
+      </tr>
+    </thead>
+    <% @branch_offices.each do |b| %>
+      <tbody>
+        <tr class="center">
+          <td><%= link_to '編集', edit_branch_office_path(b), remote: true,
+                  class: "center btn btn-primary" %></td>
+          <td><%= link_to '削除', branch_office_path(b), method: :delete,
+                  data: { confirm: "削除してもよろしいですか?"}, class: "center btn btn-primary"  %></td>
+          <td><%= b.branch_office_number %></td>
+          <td><%= b.branch_office_name %></td>
+          <td><%= b.attendance_type %></td>
+        </tr>
+      </tbody>
+    <% end %>
+  </table>
+</div>
+
+<div>
+<tr>
+  <div class="well well-sm">
+    <button type="button" class="btn btn-primary" data-toggle="collapse"
+      data-target="#collapse_branch_offices">拠点情報の追加</button>
+  </div>
+  <td>
+    <div id="collapse_branch_offices" class="collapse">
+      <%= form_with(model: @branch_office, url: branch_offices_path, local: true, method: :post) do |f| %>
+        <table class="table table-bordered table-striped table-status" id="table-attendances">
+          <tbody class="card card-body">
+            <%= f.label :branch_office_number %>
+            <%= f.text_field :branch_office_number, class: "form-control" %>
+            <%= f.label :branch_office_name %>
+            <%= f.text_field :branch_office_name, class: "form-control" %>
+            <%= f.label :attendance_type %>
+            <%= f.select :attendance_type, [['なし'], ['出勤'], ['退勤']], { include_blank: true }, class: "form-control" %>
+            <br>
+            <div class="center">
+              <%= f.submit yield(:button_text), class: "btn btn-primary form-control" %>
+            </div>
+          </tbody>
+        </table>
+      <% end %>
+    </div>
+  </td>
+</tr>
+</div>
+<!--モーダルウインドウ表示-->
+<div id="edit" class="modal fade" tabindex="-1", role="dialog", aria-hidden="true"></div>
