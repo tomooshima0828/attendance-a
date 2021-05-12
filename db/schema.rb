@@ -10,15 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210512062758) do
+ActiveRecord::Schema.define(version: 20210512071430) do
 
   create_table "attendances", force: :cascade do |t|
     t.date "worked_on"
     t.datetime "started_at"
     t.datetime "finished_at"
     t.string "note"
+    t.datetime "started_at_previously"
+    t.datetime "finished_at_previously"
+    t.datetime "started_at_changed"
+    t.datetime "finished_at_changed"
+    t.datetime "estimated_overtime_hours"
+    t.string "business_process_content"
+    t.datetime "year_starting"
+    t.datetime "year_ending"
+    t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 
   create_table "branch_offices", force: :cascade do |t|
@@ -44,6 +54,7 @@ ActiveRecord::Schema.define(version: 20210512062758) do
     t.boolean "superior", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
   end
 
 end
