@@ -74,6 +74,7 @@ class UsersController < ApplicationController
     @user = User.find(params[:user_id])
     # 自身宛てのattendanceのみを表示させる
     @attendances = Attendance.where(overtime_request_superior: @user.id)
+    
   end
 
   def update_overtime_response # 残業申請への返答 更新
@@ -102,11 +103,13 @@ class UsersController < ApplicationController
   def edit_working_hours_response
     @user = User.find(params[:user_id])
     @attendances = Attendance.where(working_hours_request_superior: @user.id)
+    
   end
 
   def update_working_hours_response
     @user = User.find(params[:user_id])
     @attendances = Attendance.where(working_hours_request_superior: @user.id)
+    
   end
 
   private
