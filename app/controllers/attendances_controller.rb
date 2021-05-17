@@ -36,11 +36,13 @@ class AttendancesController < ApplicationController
         attendance.update_attributes!(item)
       end
     end
+    
     flash[:success] = "1ヶ月分の勤怠情報を更新しました。"
     redirect_to user_url(date: params[:date])
   rescue ActiveRecord::RecordInvalid # トランザクションによるエラーの分岐です。
     flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。"
     redirect_to attendances_edit_one_month_user_url(date: params[:date])
+
   end
 
   
@@ -53,8 +55,9 @@ class AttendancesController < ApplicationController
   def update_overtime_request # 残業申請 提出
     @user = User.find(params[:user_id])
     @attendance = Attendance.find(params[:id])
-    if @attendance.update(overtime_request_params)
-      @attendance.overtime_response_superior = nil
+    
+    if @attendance.update_attributes(overtime_request_params)
+      @attendance.selector_overtime_approval = nil
       
       flash[:success] = "#{@user.name}の残業申請が完了しました。"
     end
@@ -65,14 +68,13 @@ class AttendancesController < ApplicationController
 
   private
 
-    # 1ヶ月分の勤怠情報を扱います。
-    def attendances_params
-      params.require(:user).permit(attendances: [:started_at, :finished_at, :note])[:attendances]
-    end
+  
 
-    def overtime_request_params
-      params.require(:attendance).permit([:estimated_overtime_hours, :next_day_overtime, :business_process_content, :overtime_request_superior])
-    end
+  # ユーザー1名で単数の勤怠を更新する場合はこの書き方で
+  def overtime_request_params
+    params.require(:attendance).permit(:estimated_overtime_hours, :next_day_overtime, :business_process_content, :selector_overtime_request)
+  end
+
 
     # beforeフィルター
 

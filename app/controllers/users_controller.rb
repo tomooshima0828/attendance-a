@@ -1,10 +1,10 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :edit, :update, :destroy, :edit_basic_info, :update_basic_info]
+  before_action :set_user, only: [:show, :attendance_confirmation, :edit, :update, :destroy, :edit_basic_info, :update_basic_info]
   before_action :logged_in_user, only: [:index, :show, :edit, :update, :destroy, :edit_basic_info, :update_basic_info]
   before_action :correct_user, only: [:edit, :update]
   before_action :admin_user, only: [:index, :destroy, :edit_basic_info, :update_basic_info]
   before_action :non_admin_user, only: :show
-  before_action :set_one_month, only: :show
+  before_action :set_one_month, only: [:show, :attendance_confirmation]
 
   def index
     @users = User.paginate(page: params[:page])
@@ -61,7 +61,7 @@ class UsersController < ApplicationController
   end
 
   def update_basic_info
-    if @user.update_attributes(basic_info_params)
+    if @user.update_attributes(user_params)
       flash[:success] = "#{@user.name}の基本情報を更新しました。"
     else
       flash[:danger] = "#{@user.name}の更新は失敗しました。<br>" + @user.errors.full_messages.join("<br>")
@@ -69,25 +69,25 @@ class UsersController < ApplicationController
     redirect_to users_url
   end
 
-  def edit_overtime_response # 残業申請への返答 表示
+  def edit_overtime_approval # 残業申請への返答 表示
     # @userは自身(上長1または上長2)
     @user = User.find(params[:user_id])
     # 自身宛てのattendanceのみを表示させる
-    @attendances = Attendance.where(overtime_request_superior: @user.id)
+    @attendances = Attendance.where(selector_overtime_request: @user.id)
     
   end
 
-  def update_overtime_response # 残業申請への返答 更新
+  def update_overtime_approval # 残業申請への返答 更新
     @user = User.find(params[:user_id])
-    @attendances = Attendance.where(overtime_request_superior: @user.id)
+    @attendances = Attendance.where(selector_overtime_request: @user.id)
     
     ActiveRecord::Base.transaction do
-     overtime_response_params.each do |id, item|
+     overtime_approval_params.each do |id, item|
       attendance = Attendance.find(id)
-      if item[:overtime_response_superior] == '承認'
+      if item[:selector_overtime_approval] == '承認'
         attendance.update_attributes!(item)
       end
-      # if item[:overtime_response_superior] == '否認'
+      # if item[:selector_overtime_approval] == '否認'
         
       # end
      end
@@ -95,38 +95,80 @@ class UsersController < ApplicationController
      redirect_to @user
     rescue ActiveRecord::RecordInvalid
       flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。"
-      redirect_to user_edit_overtime_response_path(@user)
+      redirect_to user_edit_overtime_approval_path(@user)
     end
     
   end
 
-  def edit_working_hours_response
+  def edit_working_hours_approval
     @user = User.find(params[:user_id])
-    @attendances = Attendance.where(working_hours_request_superior: @user.id)
+    @attendances = Attendance.where(selector_working_hours_request: @user.id)
     
   end
 
-  def update_working_hours_response
+  def update_working_hours_approval
     @user = User.find(params[:user_id])
-    @attendances = Attendance.where(working_hours_request_superior: @user.id)
+    @attendances = Attendance.where(selector_working_hours_request: @user.id)
     
+    ActiveRecord::Base.transaction do
+      working_hours_approval_params.each do |id, item|
+        attendance = Attendance.find(id)
+        
+        if item[:selector_working_hours_approval] == "承認"
+          attendance.update_attributes!(item)
+        end
+      end
+      flash[:success] = "残業申請の内容について更新しました。"
+      redirect_to @user
+    rescue ActiveRecord::RecordInvalid
+      flash[:danger] = "無効なデータがあったため、更新をキャンセルしました"
+      redirect_to user_edit_working_hours_approval_path(@user)
+    end
+    
+  end
+
+  def attendance_confirmation
+    @worked_sum = @attendances.where.not(started_at: nil).count
+  end
+
+  def update_monthly_request
+       
+    @user = User.find(params[:user_id])
+    @attendance = @user.attendances.where(worked_on: params[:attendance][:date_monthly_request])
+      
+    if monthly_request_params[:selector_monthly_request].present?
+      @attendance.update_attributes(monthly_request_params)
+      flash[:success] = "#{@user.name}の1ヶ月分の勤怠情報を申請しました。"
+    else
+      flash[:danger] = "上長を選択して下さい。" 
+    end
+    redirect_to @user
+  end
+
+  def edit_monthly_approval
+    @user = User.find(params[:user_id])
+    # @attendances = Attendance.where(selector_monthly_approval: @user.id)
+    
+  end
+
+  def update_monthly_approval
+    @user = User.find(params[:user_id])
+    # @attendances = Attendance.where(selector_monthly_request: @user.id)
   end
 
   private
 
-    def user_params
-      params.require(:user).permit(:name, :email, :affiliation, :password, :password_confirmation, :uid, :employee_number)
-    end
+ 
 
-    def basic_info_params
-      params.require(:user).permit(:affiliation, :basic_work_time)
-    end
+  def overtime_approval_params
+    params.require(:user).permit(attendances: [:selector_overtime_approval, :change_overtime])[:attendances]
+  end
 
-    def overtime_response_params
-      params.require(:user).permit(attendances: [:overtime_response_superior, :change])[:attendances]
-    end
+  def working_hours_approval_params
+    params.require(:user).permit(attendances: [:selector_working_hours_approval, :change_working_hours])[:attendances]
+  end
 
-    # beforeフィルター
-
-    
+  def monthly_request_params
+    params.require(:user).permit(attendances: [:selector_monthly_request, :date_monthly_request])[:attendances]
+  end
 end

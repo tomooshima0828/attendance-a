@@ -37,21 +37,21 @@
               <td><%= $days_of_the_week[day.worked_on.wday] %></td>
               <%# 管理者以外、かつ、日付が当日よりも後の日付の場合、read only %>
               <% if !current_user.admin? && (Date.current < day.worked_on) %>
-                <td><%= attendance.time_field :started_at, readonly: true, class: "form-control" %></td>
-                <td><%= attendance.time_field :finished_at, readonly: true, class: "form-control" %></td>
-              <%# 管理者は全て編集できる %>
+                <td><%= attendance.time_field :started_at_edited, readonly: true, class: "form-control" %></td>
+                <td><%= attendance.time_field :finished_at_edited, readonly: true, class: "form-control" %></td>
+              <%# 管理者、または、日付が当日よりも前の場合、書き込み可能 %>
               <% else %>
-                <td><%= attendance.time_field :started_at, class: "form-control" %></td>
-                <td><%= attendance.time_field :finished_at, class: "form-control" %></td>
+                <td><%= attendance.time_field :started_at_edited, class: "form-control" %></td>
+                <td><%= attendance.time_field :finished_at_edited, class: "form-control" %></td>
               <% end %>
-              <td></td>
+              <td><%= attendance.check_box :next_day_working_hours, {}, "true", "false" %></td>
               <td>
-                <% if day.started_at.present? && day.finished_at.present? %>
-                  <%= working_times(day.started_at, day.finished_at) %>
+                <% if day.started_at_edited.present? && day.finished_at_edited.present? %>
+                  <%= working_times(day.started_at_edited, day.finished_at_edited) %>
                 <% end %>
               </td>
               <td><%= attendance.text_field :note, class: "form-control" %></td>
-              <td><%= attendance.select :working_hours_request_superior, { '上長1': 2, '上長2': 3 }, { include_blank: '選択してください' }, { class: "form-control" } %></td>
+              <td><%= attendance.select :selector_working_hours_request, { '上長1': 2, '上長2': 3 }, { include_blank: '選択してください' }, { class: "form-control" } %></td>
             </tr>
           <% end %>
         <% end %>

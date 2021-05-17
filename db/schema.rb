@@ -17,21 +17,24 @@ ActiveRecord::Schema.define(version: 20210512071430) do
     t.datetime "started_at"
     t.datetime "finished_at"
     t.string "note"
-    t.datetime "started_at_previously"
-    t.datetime "finished_at_previously"
-    t.datetime "started_at_changed"
-    t.datetime "finished_at_changed"
+    t.datetime "started_at_before"
+    t.datetime "finished_at_before"
+    t.datetime "started_at_edited"
+    t.datetime "finished_at_edited"
     t.datetime "estimated_overtime_hours"
     t.string "business_process_content"
     t.boolean "next_day_overtime", default: false
-    t.boolean "next_day_attendance", default: false
-    t.integer "overtime_request_superior", default: 0, null: false
-    t.string "overtime_response_superior"
-    t.integer "working_hours_request_superior", default: 0, null: false
-    t.string "working_hours_response_superior"
-    t.integer "one_month_request_superior", default: 0, null: false
-    t.string "one_month_response_superior"
-    t.boolean "change", default: false
+    t.boolean "next_day_working_hours", default: false
+    t.integer "selector_overtime_request", default: 0
+    t.string "selector_overtime_approval"
+    t.integer "selector_working_hours_request", default: 0
+    t.string "selector_working_hours_approval"
+    t.integer "selector_monthly_request", default: 0
+    t.string "selector_monthly_approval"
+    t.date "date_monthly_request"
+    t.boolean "change_overtime", default: false
+    t.boolean "change_working_hours", default: false
+    t.boolean "change_monthly", default: false
     t.datetime "year_starting"
     t.datetime "year_ending"
     t.integer "user_id"
@@ -56,9 +59,9 @@ ActiveRecord::Schema.define(version: 20210512071430) do
     t.string "uid"
     t.string "password_digest"
     t.string "remember_digest"
-    t.datetime "basic_work_time", default: "2021-05-11 23:00:00"
-    t.datetime "designated_work_start_time", default: "2021-05-12 00:00:00"
-    t.datetime "designated_work_end_time", default: "2021-05-12 09:00:00"
+    t.datetime "basic_work_time", default: "2021-05-16 23:00:00"
+    t.datetime "designated_work_start_time", default: "2021-05-17 00:00:00"
+    t.datetime "designated_work_end_time", default: "2021-05-17 09:00:00"
     t.boolean "admin", default: false
     t.boolean "superior", default: false
     t.datetime "created_at", null: false

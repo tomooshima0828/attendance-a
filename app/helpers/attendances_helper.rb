@@ -18,4 +18,15 @@ module AttendancesHelper
   def working_times(start, finish)
     format("%.2f", (((finish - start) / 60) / 60.0))
   end
+
+  def format_hour(time)
+    # 2d == two digits 2桁
+    format('%.2d', time.hour)
+  end
+
+  def format_min(time)
+    # 2d == two digits 2桁
+    format('%.2d', time.min)
+  end
+
 end
