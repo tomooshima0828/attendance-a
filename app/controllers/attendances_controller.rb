@@ -66,7 +66,8 @@ class AttendancesController < ApplicationController
 
   def update_monthly_request
     
-    @attendance = @user.attendances.where(worked_on: params[:user][:date_monthly_request])
+    # @userはset_userでセットしている
+    @attendance = @user.attendances.where(worked_on: params[:attendance][:date_monthly_request])
     
     # 上長を選択したら申請が可能
     if monthly_request_params[:selector_monthly_request].present?
@@ -81,7 +82,7 @@ class AttendancesController < ApplicationController
   def edit_monthly_approval
     
     @user = User.find(params[:id])
-    @attendances = Attendance.where(selector_monthly_approval: @user.id)
+    @attendances = Attendance.where(selector_monthly_request: @user.id)
     
   end
 
@@ -89,10 +90,12 @@ class AttendancesController < ApplicationController
     
     @user = User.find(params[:id])
     @attendances = Attendance.where(selector_monthly_request: @user.id)
-    if monthly_approval_params[:selector_monthly_request].present?
-      update_attributes(monthly_approval_params)
+    
+    if monthly_approval_params[:selector_monthly_approval].present?
+      @attendances.update(monthly_approval_params)
       flash[:success] = "1ヶ月分の勤怠をを承認しました"
     end
+    redirect_to @user
   end
 
 
@@ -107,11 +110,11 @@ class AttendancesController < ApplicationController
   end
 
   def monthly_request_params
-    params.require(:user).permit(:selector_monthly_request, :date_monthly_request)
+    params.require(:attendance).permit(:selector_monthly_request, :date_monthly_request)
   end
 
   def monthly_approval_params
-    params.require(:user).permit(:selector_monthly_approval, :change_monthly)
+    params.require(:user).permit(attendances: [:selector_monthly_approval, :change_monthly])[:attendances]
   end
 
     # beforeフィルター

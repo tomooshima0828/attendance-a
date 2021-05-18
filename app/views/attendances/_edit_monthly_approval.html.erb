@@ -13,7 +13,7 @@
         
           <% @attendances.each do |day| %>
             <% user = User.find(day.user_id) %>
-              <h2><%= 【user.name】からの1ヶ月分勤怠申請 %></h2>
+              <h2>【<%= user.name %>】からの1ヶ月分勤怠申請</h2>
               <%= f.fields_for "[]attendances", day do |attendance| %>
                 <thead>
                   <tr>
@@ -26,9 +26,9 @@
                 <tbody>
                   <tr class="center">
                     <td><%= l(day.date_monthly_request, format: :short) %></td>
-                    <td></td>
-                    <td></td>
-                    <td><%= link_to '確認', '#', class: "btn btn-primary" %></td>
+                    <td><%= attendance.select :selector_monthly_approval, [['なし'], ['申請中'], ['承認'], ['否認']], { include_blank: false, selected: 1 } %></td>
+                    <td><%= attendance.check_box :change_monthly, {}, "true", "false" %></td>
+                    <td><%= link_to '確認', attendance_confirmation_user_path(user), class: "btn btn-primary" %></td>
                   </tr>
                 </tbody>
               <% end %>
