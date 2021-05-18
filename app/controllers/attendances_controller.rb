@@ -1,5 +1,5 @@
 class AttendancesController < ApplicationController
-  before_action :set_user, only: [:edit_one_month, :update_one_month]
+  before_action :set_user, only: [:edit_one_month, :update_one_month, :update_monthly_request]
   before_action :logged_in_user, only: [:update, :edit_one_month]
   before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month]
   before_action :set_one_month, only: :edit_one_month
@@ -64,7 +64,38 @@ class AttendancesController < ApplicationController
     redirect_to @user
   end
 
-  
+  def update_monthly_request
+    
+    @attendance = @user.attendances.where(worked_on: params[:user][:date_monthly_request])
+    
+    # 上長を選択したら申請が可能
+    if monthly_request_params[:selector_monthly_request].present?
+      @attendance.update(monthly_request_params)
+      flash[:success] = "#{@user.name}の1ヶ月分の勤怠情報を申請しました。"
+    else
+      flash[:danger] = "上長を選択して下さい。" 
+    end
+    redirect_to @user
+  end
+
+  def edit_monthly_approval
+    
+    @user = User.find(params[:id])
+    @attendances = Attendance.where(selector_monthly_approval: @user.id)
+    
+  end
+
+  def update_monthly_approval
+    
+    @user = User.find(params[:id])
+    @attendances = Attendance.where(selector_monthly_request: @user.id)
+    if monthly_approval_params[:selector_monthly_request].present?
+      update_attributes(monthly_approval_params)
+      flash[:success] = "1ヶ月分の勤怠をを承認しました"
+    end
+  end
+
+
 
   private
 
@@ -75,6 +106,13 @@ class AttendancesController < ApplicationController
     params.require(:attendance).permit(:estimated_overtime_hours, :next_day_overtime, :business_process_content, :selector_overtime_request)
   end
 
+  def monthly_request_params
+    params.require(:user).permit(:selector_monthly_request, :date_monthly_request)
+  end
+
+  def monthly_approval_params
+    params.require(:user).permit(:selector_monthly_approval, :change_monthly)
+  end
 
     # beforeフィルター
 

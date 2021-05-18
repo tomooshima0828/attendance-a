@@ -131,34 +131,7 @@ class UsersController < ApplicationController
     @worked_sum = @attendances.where.not(started_at: nil).count
   end
 
-  def update_monthly_request
-       
-    @user = User.find(params[:user_id])
-    @attendance = @user.attendances.where(worked_on: params[:attendance][:date_monthly_request])
-      
-    if monthly_request_params[:selector_monthly_request].present?
-      @attendance.update_attributes(monthly_request_params)
-      flash[:success] = "#{@user.name}の1ヶ月分の勤怠情報を申請しました。"
-    else
-      flash[:danger] = "上長を選択して下さい。" 
-    end
-    redirect_to @user
-  end
-
-  def edit_monthly_approval
-    @user = User.find(params[:user_id])
-    # @attendances = Attendance.where(selector_monthly_approval: @user.id)
-    
-  end
-
-  def update_monthly_approval
-    @user = User.find(params[:user_id])
-    # @attendances = Attendance.where(selector_monthly_request: @user.id)
-  end
-
   private
-
- 
 
   def overtime_approval_params
     params.require(:user).permit(attendances: [:selector_overtime_approval, :change_overtime])[:attendances]
@@ -168,7 +141,5 @@ class UsersController < ApplicationController
     params.require(:user).permit(attendances: [:selector_working_hours_approval, :change_working_hours])[:attendances]
   end
 
-  def monthly_request_params
-    params.require(:user).permit(attendances: [:selector_monthly_request, :date_monthly_request])[:attendances]
-  end
+  
 end

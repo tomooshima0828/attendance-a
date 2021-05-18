@@ -25,7 +25,7 @@
 <% if @user.superior %>
   <div>
     <ul style="list-style: none;">
-      <li><%= link_to '【所属長承認申請のお知らせ】', '#' %></li>
+      <li><%= link_to '【所属長承認申請のお知らせ】', attendances_edit_monthly_approval_user_path(@user), remote: true %></li>
       <li><%= link_to '【勤怠変更申請のお知らせ】', user_edit_working_hours_approval_path(@user), remote: true %></li>
       <li><%= link_to '【残業申請のお知らせ】', user_edit_overtime_approval_path(@user), remote: true %></li>
     </ul>
@@ -137,7 +137,7 @@
         <td>
         <%# 1ヶ月所属長承認 %>
         
-        <%= form_with(model: @user, url: user_update_monthly_request_path(@user), method: :patch, local: true) do |f| %>
+        <%= form_with(model: @user, url: attendances_update_monthly_request_user_path(@user), method: :patch, local: true) do |f| %>
           <%= f.hidden_field :date_monthly_request, :value => @first_day %>
           <%= f.select :selector_monthly_request, [['上長1', 2], ['上長2', 3]], { include_blank: true }, { class: "form-control" } %>
           <%= f.submit '申請', class: "btn btn-primary" %>
@@ -153,3 +153,5 @@
 <div id="edit-overtime-approval" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 
 <div id="edit-working-hours-approval" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+
+<div id="edit-monthly-approval" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
