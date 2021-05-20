@@ -22,12 +22,38 @@
   </table>
 </div>
 
-<% if @user.superior %>
+<%# 上長ならば以下の該当する項目を表示 %>
+<% if @user.superior? %>
   <div>
     <ul style="list-style: none;">
-      <li><%= link_to '【所属長承認申請のお知らせ】', attendances_edit_monthly_approval_user_path(@user), remote: true %></li>
-      <li><%= link_to '【勤怠変更申請のお知らせ】', user_edit_working_hours_approval_path(@user), remote: true %></li>
-      <li><%= link_to '【残業申請のお知らせ】', user_edit_overtime_approval_path(@user), remote: true %></li>
+
+      <% if @count_monthly_request >= 1 %>
+        <li>
+          <%= link_to '【所属長承認申請のお知らせ】', attendances_edit_monthly_approval_user_path(@user), remote: true, :style=>"color:red;" %>
+          <b style="color: #F00; border: 1px solid #F00"><%= @count_monthly_request %>件のお知らせがあります</b>
+        </li>
+      <% else %>
+        <li>【所属長承認申請のお知らせ】</li>
+      <% end %>
+      
+      <% if @count_working_hours_request >= 1 %>
+        <li>
+          <%= link_to '【勤怠変更申請のお知らせ】', user_edit_working_hours_approval_path(@user), remote: true, :style=>"color:red;" %>
+          <b style="color: #F00; border: 1px solid #F00"><%= @count_working_hours_request %>件のお知らせがあります</b>
+        </li>
+      <% else %>
+        <li>【勤怠変更申請のお知らせ】</li>
+      <% end %>
+
+      <% if @count_overtime_request >= 1 %>
+        <li>
+          <%= link_to '【残業申請のお知らせ】', user_edit_overtime_approval_path(@user), remote: true, :style=>"color:red;" %>
+          <b style="color: #F00; border: 1px solid #F00"><%= @count_overtime_request %>件のお知らせがあります</b>
+        </li>
+      <% else %>
+        <li>【残業申請のお知らせ】</li>
+      <% end %>
+
     </ul>
   </div>
 <% end %>
@@ -134,14 +160,27 @@
         <td><strong>累計在社時間</strong><br>
             <%= format("%.2f", @total_working_times.to_f) %></td>
         <td colspan="5"></td>
+
         <td>
-        <%# 1ヶ月所属長承認 %>
-        
-        <%= form_with(model: @attendances, url: attendances_update_monthly_request_user_path(@user), method: :patch, local: true) do |f| %>
-          <%= f.hidden_field :date_monthly_request, :value => @first_day %>
-          <%= f.select :selector_monthly_request, [['上長1', 2], ['上長2', 3]], { include_blank: true }, { class: "form-control" } %>
-          <%= f.submit '申請', class: "btn btn-primary" %>
-        <% end %>
+          
+          <%# 1ヶ月所属長承認 %>        
+          <%= form_with(model: @attendances, url: attendances_update_monthly_request_user_path(@user), method: :patch, local: true) do |f| %>
+            
+            <ul style="list-style: none;">
+              <% if @attendance_monthly_request.status_monthly_request == "申請中" %>
+                <li><%= @attendance_monthly_request.selector_monthly_request %>に申請中</li>
+              <% elsif @attendance_monthly_request.status_monthly_request.blank? %>
+                <li></li>
+              <% end %>
+            </ul>
+            
+            
+            <%= f.hidden_field :date_monthly_request, :value => @first_day %>
+            <%= f.hidden_field :status_monthly_request, :value => "申請中" %>
+            <%= f.select :selector_monthly_request, [['上長1', 2], ['上長2', 3]], { include_blank: true }, { class: "form-control" } %>
+            <%= f.submit '申請', class: "btn btn-primary btn-block" %>
+          <% end %>
+          
         </td>
       </tr>
     </tfoot>

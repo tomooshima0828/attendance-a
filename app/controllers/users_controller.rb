@@ -21,7 +21,18 @@ class UsersController < ApplicationController
   end
 
   def show
+    # 1ヶ月の出勤回数の合計
     @worked_sum = @attendances.where.not(started_at: nil).count
+    # 1ヶ月申請を押したときに月初日に「申請中」が入る
+    @attendance_monthly_request = @user.attendances.find_by(worked_on: @first_day)
+
+    # 上長　申請された数をカウントして赤字で表示する
+    # 上長　自身宛ての申請があり、かつステータスが申請中のときに、その数をカウントする
+    if @user.superior?
+      @count_monthly_request = Attendance.where(selector_monthly_request: @user.id, status_monthly_request: "申請中").count
+      @count_working_hours_request = Attendance.where(selector_working_hours_request: @user.id, status_working_hours_request: "申請中").count
+      @count_overtime_request = Attendance.where(selector_overtime_request: @user.id, status_overtime_request: "申請中").count
+    end
   end
 
   def new

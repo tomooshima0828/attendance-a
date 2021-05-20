@@ -32,6 +32,10 @@ class CreateAttendances < ActiveRecord::Migration[5.1]
       t.boolean :change_working_hours, default: false # 変更 勤怠
       t.boolean :change_monthly, default: false # 変更 1ヶ月
 
+      t.string :status_overtime_request
+      t.string :status_working_hours_request
+      t.string :status_monthly_request
+
       t.datetime :year_starting # 最初の年
       t.datetime :year_ending # 最後の年
 

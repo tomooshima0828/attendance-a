@@ -64,6 +64,7 @@ class AttendancesController < ApplicationController
     redirect_to @user
   end
 
+  # 画面右下の1ヶ月申請ボタンを押したときのアクション
   def update_monthly_request
     
     # @userはset_userでセットしている
@@ -110,7 +111,7 @@ class AttendancesController < ApplicationController
   end
 
   def monthly_request_params
-    params.require(:attendance).permit(:selector_monthly_request, :date_monthly_request)
+    params.require(:attendance).permit(:date_monthly_request, :status_monthly_request, :selector_monthly_request)
   end
 
   def monthly_approval_params
