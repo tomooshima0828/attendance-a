@@ -81,8 +81,9 @@ class AttendancesController < ApplicationController
   end
 
   def edit_monthly_approval
-    
+    # 上長をパラメーターから取得する
     @user = User.find(params[:id])
+    # 上長のIDと同じ番号のattendance.selector_monthly_requestを取得する
     @attendances = Attendance.where(selector_monthly_request: @user.id)
     
   end

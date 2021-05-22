@@ -23,8 +23,41 @@ class UsersController < ApplicationController
   def show
     # 1ヶ月の出勤回数の合計
     @worked_sum = @attendances.where.not(started_at: nil).count
-    # 1ヶ月申請を押したときに月初日に「申請中」が入る
-    @attendance_monthly_request = @user.attendances.find_by(worked_on: @first_day)
+    # 月初日を取得。　1ヶ月申請を押したときに月初日に「申請中」が入る
+    @first_day_monthly_request = @user.attendances.find_by(worked_on: @first_day)
+    byebug
+    @approved_monthly_approval = @user.attendances.find_by(selector_monthly_approval: "承認")
+    @disapproved_monthly_approval = @user.attendances.find_by(selector_monthly_approval: "否認")
+    
+    if @first_day_monthly_request.status_monthly_request == "申請中"
+      if @first_day_monthly_request.selector_monthly_request == 2
+        @status_updated = "上長1に申請中"
+        
+      else @first_day_monthly_request.selector_monthly_request == 3
+        @status_updated = "上長2に申請中"
+        
+      end
+    end
+
+    if @disapproved_monthly_approval.present?
+      if @disapproved_monthly_approval.selector_monthly_request == 2
+        @status_updated = "上長1から否認済み"
+      else @disapproved_monthly_approval.selector_monthly_request == 3
+        @status_updated = "上長2から否認済み"
+      end
+    end
+
+    if @approved_monthly_approval.present?
+      if @approved_monthly_approval.selector_monthly_request == 2
+        @status_updated = "上長1から承認済み"
+      else @approved_monthly_approval.selector_monthly_request == 3
+        @status_updated = "上長2から承認済み"
+      end
+    end
+
+    
+
+
 
     # 上長　申請された数をカウントして赤字で表示する
     # 上長　自身宛ての申請があり、かつステータスが申請中のときに、その数をカウントする
