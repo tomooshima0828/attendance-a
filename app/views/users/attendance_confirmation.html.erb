@@ -86,7 +86,7 @@
           <td><%= day.business_process_content %></td>
           <td></td>
           
-          <% if day.selector_overtime_approval == '承認' %>
+          <% if day.selector_overtime_request == '承認' %>
             <td>残業承認済み</td>
           <% elsif day.selector_overtime_request == 2 %>
             <td>上長1に申請中</td>

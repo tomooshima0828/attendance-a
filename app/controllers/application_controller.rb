@@ -64,7 +64,7 @@ class ApplicationController < ActionController::Base
 
   # ユーザー1名で複数の勤怠を更新する場合はこの書き方で
   def attendances_params
-    params.require(:user).permit(attendances: [:started_at, :finished_at, :note, :started_at_edited, :finished_at_edited, :started_at_before, :finished_at_before, :next_day_working_hours, :selector_working_hours_request, :selector_monthly_request])[:attendances]
+    params.require(:user).permit(attendances: [:started_at, :finished_at, :started_at_edited, :finished_at_edited, :started_at_before, :finished_at_before, :note, :next_day_working_hours, :selector_working_hours_request, :status_working_hours, :selector_monthly_request])[:attendances]
   end
   
 

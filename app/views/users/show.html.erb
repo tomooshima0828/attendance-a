@@ -136,16 +136,20 @@
           <td><%= working_times(@user.designated_work_end_time, day.estimated_overtime_hours) if day.estimated_overtime_hours.present? %></td>
           <td><%= day.business_process_content %></td>
           
-          <% if day.selector_overtime_approval == '承認' %>
-            <td>残業承認済み</td>
+          <td>
+            <ul style="list-style: none;">
+              <% if day.status_overtime == '承認' %>
+                <li>残業は承認済み</li>
+              <% elsif day.selector_overtime_request == 2 %>
+                <li>上長1に残業を申請中</li>
+              <% elsif day.selector_overtime_request == 3 %>
+                <li>上長2に残業を申請中</li>
+              <% end %>
+            </ul>
             
-          <% elsif day.selector_overtime_request == 2 %>
-            <td>上長1に申請中</td>
-          <% elsif day.selector_overtime_request == 3 %>
-            <td>上長2に申請中</td>
-          <% else %>
-            <td></td>
-          <% end %>
+          </td>
+          
+          
 
           
                  
@@ -171,7 +175,7 @@
             </ul>
                         
             <%= f.hidden_field :date_monthly_request, :value => @first_day %>
-            <%= f.hidden_field :status_monthly_request, :value => "申請中" %>
+            <%= f.hidden_field :status_monthly, :value => "申請中" %>
             <%= f.select :selector_monthly_request, [['上長1', 2], ['上長2', 3]], { include_blank: true }, { class: "form-control" } %>
             <%= f.submit '申請', class: "btn btn-primary btn-block" %>
           <% end %>

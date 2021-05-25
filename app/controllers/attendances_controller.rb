@@ -57,7 +57,7 @@ class AttendancesController < ApplicationController
     @attendance = Attendance.find(params[:id])
     
     if @attendance.update_attributes(overtime_request_params)
-      @attendance.selector_overtime_approval = nil
+      #@attendance.selector_overtime_request = nil
       
       flash[:success] = "#{@user.name}の残業申請が完了しました。"
     end
@@ -84,18 +84,18 @@ class AttendancesController < ApplicationController
     # 上長をパラメーターから取得する
     @user = User.find(params[:id])
     # 上長のIDと同じ番号のattendance.selector_monthly_requestを取得する
-    @attendances = Attendance.where(selector_monthly_request: @user.id)
+    @attendances = Attendance.where(selector_monthly_request: @user.id, status_monthly: '申請中')
     
   end
 
   def update_monthly_approval
     
     @user = User.find(params[:id])
-    @attendances = Attendance.where(selector_monthly_request: @user.id)
+    @attendances = Attendance.where(selector_monthly_request: @user.id, status_monthly: '申請中')
     
-    if monthly_approval_params[:selector_monthly_approval].present?
+    if monthly_approval_params[:status_monthly].present?
       @attendances.update(monthly_approval_params)
-      flash[:success] = "1ヶ月分の勤怠をを承認しました"
+      flash[:success] = "1ヶ月分の勤怠を更新しました"
     end
     redirect_to @user
   end
@@ -108,15 +108,15 @@ class AttendancesController < ApplicationController
 
   # ユーザー1名で単数の勤怠を更新する場合はこの書き方で
   def overtime_request_params
-    params.require(:attendance).permit(:estimated_overtime_hours, :next_day_overtime, :business_process_content, :selector_overtime_request)
+    params.require(:attendance).permit(:estimated_overtime_hours, :next_day_overtime, :business_process_content, :selector_overtime_request, :status_overtime)
   end
 
   def monthly_request_params
-    params.require(:attendance).permit(:date_monthly_request, :status_monthly_request, :selector_monthly_request)
+    params.require(:attendance).permit(:date_monthly_request, :status_monthly, :selector_monthly_request)
   end
 
   def monthly_approval_params
-    params.require(:user).permit(attendances: [:selector_monthly_approval, :change_monthly])[:attendances]
+    params.require(:user).permit(attendances: [:status_monthly, :change_monthly])[:attendances]
   end
 
     # beforeフィルター
