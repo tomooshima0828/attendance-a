@@ -47,7 +47,7 @@ class UsersController < ApplicationController
       if @first_day_monthly_request.selector_monthly_request == 2
         @status_updated = "上長1に承認されました"
       else @first_day_monthly_request.selector_monthly_request == 3
-        @status_updated = "上長2に承認されました"
+        @status_updated = "上長2が承認されました"
       end
     elsif @first_day_monthly_request.status_monthly == "否認"
       if @first_day_monthly_request.selector_monthly_request == 2
@@ -107,6 +107,7 @@ class UsersController < ApplicationController
   def edit_overtime_approval # 残業申請への返答 表示
     # @userは自身(上長1または上長2)
     @user = User.find(params[:user_id])
+    @users = User.joins(:attendances).group("users.id").where(attendances: { status_overtime: "申請中" })
     # 自身宛てのattendanceのみを表示させる
     @attendances = Attendance.where(selector_overtime_request: @user.id, status_overtime: "申請中")
     
@@ -135,13 +136,14 @@ class UsersController < ApplicationController
 
   def edit_working_hours_approval
     @user = User.find(params[:user_id])
-    @users = User.joins(:attendances).group("users.id").where(attendnaces: { status_working_hours: "申請中" })
+    @users = User.joins(:attendances).group("users.id").where(attendances: { status_working_hours: "申請中" })
     @attendances = Attendance.where(selector_working_hours_request: @user.id, status_working_hours: "申請中")
     
   end
 
   def update_working_hours_approval
     @user = User.find(params[:user_id])
+    @users = User.joins(:attendances).group("users.id").where(attendances: { status_working_hours: "申請中" })
     @attendances = Attendance.where(selector_working_hours_request: @user.id, status_working_hours: "申請中")
     
     ActiveRecord::Base.transaction do

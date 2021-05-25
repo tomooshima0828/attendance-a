@@ -83,6 +83,7 @@ class AttendancesController < ApplicationController
   def edit_monthly_approval
     # 上長をパラメーターから取得する
     @user = User.find(params[:id])
+    @users = User.joins(:attendances).group("users.id").where(attendances: { status_monthly: "申請中" } )
     # 上長のIDと同じ番号のattendance.selector_monthly_requestを取得する
     @attendances = Attendance.where(selector_monthly_request: @user.id, status_monthly: '申請中')
     
@@ -91,6 +92,7 @@ class AttendancesController < ApplicationController
   def update_monthly_approval
     
     @user = User.find(params[:id])
+    @users = User.joins(:attendances).group("users.id").where(attendances: { status_monthly: "申請中" } )
     @attendances = Attendance.where(selector_monthly_request: @user.id, status_monthly: '申請中')
     
     if monthly_approval_params[:status_monthly].present?
