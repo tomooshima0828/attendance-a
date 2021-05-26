@@ -1,10 +1,11 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
+  # SessionsHelperはどこでも使える
   include SessionsHelper
 
   $days_of_the_week = %w{日 月 火 水 木 金 土}
 
-  # beforフィルター
+  # beforeフィルター
 
   # paramsハッシュからユーザーを取得します。
   def set_user
