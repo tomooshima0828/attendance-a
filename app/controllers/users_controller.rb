@@ -110,7 +110,9 @@ class UsersController < ApplicationController
     @users = User.joins(:attendances).group("users.id").where(attendances: { status_overtime: "申請中" })
     # 自身宛てのattendanceのみを表示させる
     @attendances = Attendance.where(selector_overtime_request: @user.id, status_overtime: "申請中")
-    
+    @attendances.each do |attendance|
+      attendance.change_overtime = nil
+    end
   end
 
   def update_overtime_approval # 残業申請への返答 更新
@@ -150,13 +152,17 @@ class UsersController < ApplicationController
 
   def edit_working_hours_approval
     @user = User.find(params[:user_id])
+    # joinsでuserとattendancesを結合させて表示できる。whereでattendancesを絞り込む。
     @users = User.joins(:attendances).group("users.id").where(attendances: { status_working_hours: "申請中" })
     @attendances = Attendance.where(selector_working_hours_request: @user.id, status_working_hours: "申請中")
+    @attendances.each do |attendance|
+      attendance.change_working_hours = nil
+    end
     
   end
 
   def update_working_hours_approval
-    
+    # パラメーターの情報を更新する
     ActiveRecord::Base.transaction do
       # itemにはform_withで入力されたparamsの値が入っている
       working_hours_approval_params.each do |id, item|

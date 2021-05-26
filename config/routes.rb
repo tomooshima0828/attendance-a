@@ -48,9 +48,6 @@ Rails.application.routes.draw do
     get 'edit_working_hours_approval' # 上長 勤怠変更モーダル
     # PATCH /users/:user_id/update_working_hours_approval
     patch 'update_working_hours_approval' # 上長勤怠変更モーダル 更新
-
-    
-    
     
     # PATCH /users/:user_id/attendances/:id 個別のattendanceの属性(出勤、退勤)をupdateする
     resources :attendances, only: :update do

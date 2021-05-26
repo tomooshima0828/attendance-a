@@ -86,20 +86,28 @@ class AttendancesController < ApplicationController
     @users = User.joins(:attendances).group("users.id").where(attendances: { status_monthly: "申請中" } )
     # 上長のIDと同じ番号のattendance.selector_monthly_requestを取得する
     @attendances = Attendance.where(selector_monthly_request: @user.id, status_monthly: '申請中')
-    
+    @attendances.each do |attendance|
+      attendance.change_monthly = nil
+    end
   end
 
   def update_monthly_approval
     
-    @user = User.find(params[:id])
-    @users = User.joins(:attendances).group("users.id").where(attendances: { status_monthly: "申請中" } )
-    @attendances = Attendance.where(selector_monthly_request: @user.id, status_monthly: '申請中')
-    
-    if monthly_approval_params[:status_monthly].present?
-      @attendances.update(monthly_approval_params)
-      flash[:success] = "1ヶ月分の勤怠を更新しました"
+    ActiveRecord::Base.transaction do
+      monthly_approval_params.each do |id, item|
+
+        if item[:change_monthly] == "true"
+
+          attendance = Attendance.find(id)
+          attendance.update_attributes!(item)
+        end
+      end
+      flash[:success] = "1ヶ月分の勤怠情報を更新しました。"
+      redirect_to user_url(params[:id]) and return
     end
-    redirect_to @user
+  rescue ActiveRecord::RecordInvalid
+    flash[:danger] = "無効なデータがあったため、更新をキャンセルしました"
+    redirect_to user_url(params[:id]) and return
   end
 
 
