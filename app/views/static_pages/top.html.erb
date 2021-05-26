@@ -1,6 +1,25 @@
 <% provide(:title, "Top") %>
 <div class="center jumbotron">
-  <h1>勤怠管理システム</h1>
-  <p>このアプリケーションでは、登録されたユーザーの勤怠情報を閲覧・登録・編集することができます。</p>
-  <%= link_to "ユーザー登録", signup_path, class: "btn btn-lg btn-primary" %>
+
+  <div>
+    <h1>勤怠A / 勤怠システムA</h1>
+    <p>Attendance A / Attendance System A</p>
+  </div>
+  
+  <div>
+    <p>This application has been created by Tomo OSHIMA in 2021 in accordance with the guidance of Celeb Engineering Coding School.
+      Because the contents of this web application service are saved on Github with the status of "Public", you may want to find them and check some codes for your reference as needed.</p>
+    <p>As the assignment of Attendance A in the school is rather difficult or complicated to comprehend, but it is not impossible to conquer it.
+      If you see this now, it may take time but you can go beyond and finish this assignment. Good luck to you.</p>
+  </div>
+
+  <div>
+    <%= link_to "ユーザー登録", signup_path, class: "btn btn-md btn-primary" %>
+    <% if logged_in? %>
+      <%= link_to "ログアウト", logout_path, method: :delete, class: "btn btn-md btn-warning" %>
+    <% else %>
+      <%= link_to 'ログイン', login_path, class: "btn btn-md btn-info" %>
+    <% end %>
+  </div>
+   
 </div>
