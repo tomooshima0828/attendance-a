@@ -7,23 +7,14 @@
   </div>
   
   <div>
-    <p>This application has been created in accordance with the guidance of
-    Celeb Engineering Coding School.</p>
-  </div>
-
-  <div>
-    <ul style="list-style: none;">
-      <li><%= link_to "ユーザー登録", signup_path, class: "btn btn-md btn-primary" %></li>
-        <% if logged_in? %>
-          <br>
-          <b style="color: #F00; border: 1px solid #F00">現在【<%= current_user.name %>】さんはログイン中です</b>
-          <li><%= link_to "ログアウト", logout_path, method: :delete, class: "btn btn-md btn-warning" %></li>
-        <% else %>
-          <p></p>
-          <li><%= link_to 'ログイン', login_path, class: "btn btn-md btn-info" %></li>
-        <% end %>
-    </ul>
-    
+    <%= link_to "ユーザー登録", signup_path, class: "btn btn-md btn-primary" %>
+      <% if logged_in? %>
+        <p></p>
+        <%= link_to "ログアウト", logout_path, method: :delete, class: "btn btn-md btn-warning" %>
+      <% else %>
+        <p></p>
+        <%= link_to 'ログイン', login_path, class: "btn btn-md btn-info" %>
+      <% end %>   
   </div>
 </div>
 

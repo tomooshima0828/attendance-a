@@ -54,9 +54,9 @@ class User < ApplicationRecord
   # csvインポート
   def self.import(file)
     CSV.foreach(file.path, headers: true) do |row|
-      user = new
+      user = find_by(id: row["id"]) || new
       user.attributes = row.to_hash.slice(*updatable_attributes)
-      user.save
+      user.save!(:validation => false)
     end
   end
   # インポートするカラム

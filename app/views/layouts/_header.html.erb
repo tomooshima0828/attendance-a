@@ -3,7 +3,7 @@
     <%= link_to "Attendance App", root_path, id: "logo" %>
     <nav>
       <ul class="nav navbar-nav navbar-right">
-        <li><%= link_to "トップへ", root_path %></li>
+        <li><%= link_to "トップ", root_path %></li>
 
         <% if logged_in? %>
           <% if current_user.admin? %>
@@ -14,7 +14,7 @@
           <% end %>
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            アカウント <b class="caret"></b>
+            【従業員番号: <%= current_user.employee_number %>】【<%= current_user.name %>さん】がログイン中 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
             <% if !current_user.admin? %>

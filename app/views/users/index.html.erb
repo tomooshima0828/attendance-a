@@ -5,7 +5,7 @@
 <div class="col-md-8 col-md-offset-2">
 
   <%# Importing a CSV file %>
-  <%= form_with url: import_users_path, method: :post, multipart: true do %>
+  <%= form_with(url: import_users_path, method: :post, multipart: true) do %>
     <%= file_field_tag :csv_file %>
     <%= submit_tag 'CSVをインポート', class: "btn btn-primary" %>
   <% end %>
@@ -30,6 +30,7 @@
                 <button type="button" class="btn btn-lg btn-primary" data-toggle="collapse"
                           data-target="#accordion<%= user.id %>">編集</button>
               </div>
+
               <div id="accordion<%= user.id %>" class="collapse">
                 <%= form_with(model: user, url: update_basic_info_user_path(user), local: true) do |f| %>                  
                 

@@ -4,21 +4,21 @@ User.create!(name: "管理者",
   email: "admin@email.com",
   password: "password",
   password_confirmation: "password",
-  employee_number: "100",
+  employee_number: 101,
   admin: true)
 
 User.create!(name: "上長1",
   email: "superior-1@email.com",
   password: "password",
   password_confirmation: "password",
-  employee_number: "201",
+  employee_number: 201,
   superior: true)
 
 User.create!(name: "上長2",
   email: "superior-2@email.com",
   password: "password",
   password_confirmation: "password",
-  employee_number: "202",
+  employee_number: 202,
   superior: true)
 
 60.times do |n|

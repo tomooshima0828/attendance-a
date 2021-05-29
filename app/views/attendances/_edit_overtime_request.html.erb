@@ -27,7 +27,7 @@
               <td><%= f.check_box :next_day_overtime, {}, "true", "false" %></td>
               <td><%= f.text_field :business_process_content, class: "form-control" %></td>
               <%= f.hidden_field :status_overtime, :value => "申請中" %>
-              <td><%= f.select :selector_overtime_request, { '上長1': 2, '上長2': 3 }, { include_blank: '選択してください' }, { class: "form-control" } %></td>
+              <td><%= f.select :selector_overtime_request, { '上長1': 201, '上長2': 202 }, { include_blank: '選択してください' }, { class: "form-control" } %></td>
             </tr>
           </tbody>
           </table>

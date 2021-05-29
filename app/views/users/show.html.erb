@@ -63,7 +63,7 @@
 
   <%= link_to "勤怠編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-primary" %>
   <%= link_to 'CSV出力', "#", class: "btn btn-primary" %><br>
-  <%= link_to '勤怠修正ログ(承認済)', "#", class: "btn btn-primary" %>
+  <%= link_to '勤怠修正ログ(承認済)', attendance_log_user_path(@user), remote: true, class: "btn btn-primary" %>
 </div>
 
 <div>
@@ -137,15 +137,31 @@
           <td><%= day.business_process_content %></td>
           
           <td>
-            <ul style="list-style: none;">
-              <% if day.status_overtime == '承認' %>
-                <li>残業は承認済み</li>
-              <% elsif day.selector_overtime_request == 2 %>
-                <li>上長1に残業を申請中</li>
-              <% elsif day.selector_overtime_request == 3 %>
-                <li>上長2に残業を申請中</li>
-              <% end %>
-            </ul>
+            <div>
+              <ul style="list-style: none;">
+                <% if day.status_overtime == '承認' %>
+                  <li>残業は承認されました</li>
+                <% elsif day.status_overtime == '否認' %>
+                  <li>残業は否認されました</li>
+                <% elsif day.selector_overtime_request == 201 %>
+                  <li>上長1に残業を申請中</li>
+                <% elsif day.selector_overtime_request == 202 %>
+                  <li>上長2に残業を申請中</li>
+                <% end %>
+              </ul>
+              <ul style="list-style: none;">
+                <% if day.status_working_hours == '承認' %>
+                  <li>勤怠変更は承認されました</li>
+                <% elsif day.status_working_hours == '否認' %>
+                  <li>勤怠変更は否認されました</li>
+                <% elsif day.selector_working_hours_request == 201 %>
+                  <li>上長1に勤怠変更を申請中</li>
+                <% elsif day.selector_working_hours_request == 202 %>
+                  <li>上長2に勤怠変更を申請中</li>
+                <% end %>
+              </ul>
+            </div>
+            
             
           </td>
           
@@ -176,7 +192,13 @@
                         
             <%= f.hidden_field :date_monthly_request, :value => @first_day %>
             <%= f.hidden_field :status_monthly, :value => "申請中" %>
-            <%= f.select :selector_monthly_request, [['上長1', 2], ['上長2', 3]], { include_blank: true }, { class: "form-control" } %>
+            <% if @user.employee_number == 201 %>
+              <%= f.select :selector_monthly_request, { '上長2': 202 }, { prompt: "上長を選択して下さい" }, { class: "form-control" } %>
+            <% elsif @user.employee_number == 202 %>
+              <%= f.select :selector_monthly_request, { '上長1': 201 }, { prompt: "上長を選択して下さい" }, { class: "form-control" } %>
+            <% else %>
+              <%= f.select :selector_monthly_request, [['上長1', 201], ['上長2', 202]], { prompt: "上長を選択して下さい" }, { class: "form-control" } %>
+            <% end %>
             <%= f.submit '申請', class: "btn btn-primary btn-block" %>
           <% end %>
           
@@ -189,7 +211,7 @@
 <!--モーダルウインドウ表示-->
 <div id="edit-overtime-request" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 <div id="edit-overtime-approval" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
-
 <div id="edit-working-hours-approval" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
-
 <div id="edit-monthly-approval" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+
+<div id="attendance-log" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>

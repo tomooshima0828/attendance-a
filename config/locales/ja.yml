@@ -208,4 +208,5 @@ ja:
       time: "%H：%M"
       hour: "%H"
       min: "%M"
+      custom: "%Y/%m/%d"
     pm: 午後

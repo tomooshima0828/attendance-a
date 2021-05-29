@@ -83,9 +83,9 @@ class AttendancesController < ApplicationController
   def edit_monthly_approval
     # 上長をパラメーターから取得する
     @user = User.find(params[:id])
-    @users = User.joins(:attendances).group("users.id").where(attendances: { status_monthly: "申請中" } )
+    @users = User.joins(:attendances).group("users.id").where(attendances: { selector_monthly_request: @user.employee_number, status_monthly: "申請中" } )
     # 上長のIDと同じ番号のattendance.selector_monthly_requestを取得する
-    @attendances = Attendance.where(selector_monthly_request: @user.id, status_monthly: '申請中')
+    @attendances = Attendance.where(selector_monthly_request: @user.employee_number, status_monthly: '申請中')
     @attendances.each do |attendance|
       attendance.change_monthly = nil
     end
@@ -110,6 +110,7 @@ class AttendancesController < ApplicationController
     redirect_to user_url(params[:id]) and return
   end
 
+  
 
 
   private

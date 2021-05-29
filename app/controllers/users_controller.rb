@@ -7,54 +7,60 @@ class UsersController < ApplicationController
   before_action :set_one_month, only: [:show, :attendance_confirmation]
 
   def index
-    @users = User.paginate(page: params[:page])
+    @users = User.paginate(page: params[:page]).order(employee_number: "ASC")
   end
 
   def import
     if params[:csv_file].blank?
       flash[:danger] = '読み込むCSVを選択してください'
+    elsif 
+      File.extname(params[:csv_file].original_filename) != ".csv"
+      flash[:danger]= "csvファイル以外は出力できません"
+      redirect_to users_url and return
     else
-      num = User.import(params[:csv_file])
-      flash[:success] = "#{ num.to_s }件のデータ情報を追加/更新しました"
+      User.import(params[:csv_file])
+      flash[:success] = "CSVファイルの情報を追加しました"
     end
-    redirect_to users_path
+    redirect_to users_path and return
   end
 
   def show
+    
     # 1ヶ月の出勤回数の合計
     @worked_sum = @attendances.where.not(started_at: nil).count
 
     # 上長　申請中をカウントして赤字で表示する
     # 上長　自身宛ての申請があり、かつステータスが申請中のときに、その数をカウントする
     if @user.superior?
-      @count_monthly_request = Attendance.where(selector_monthly_request: @user.id, status_monthly: "申請中").count
-      @count_working_hours_request = Attendance.where(selector_working_hours_request: @user.id, status_working_hours: "申請中").count
-      @count_overtime_request = Attendance.where(selector_overtime_request: @user.id, status_overtime: "申請中").count
+      @count_monthly_request = Attendance.where(selector_monthly_request: @user.employee_number, status_monthly: "申請中").count
+      @count_working_hours_request = Attendance.where(selector_working_hours_request: @user.employee_number, status_working_hours: "申請中").count
+      @count_overtime_request = Attendance.where(selector_overtime_request: @user.employee_number, status_overtime: "申請中").count
     end
 
     # 月初日を取得。
     # 申請者が1ヶ月申請を押したときに月初日に「申請中」が入る
     # 上長が「なし」「申請中」「否認」「承認」のどれかを選択することでstatusが変更される
     @first_day_monthly_request = @user.attendances.find_by(worked_on: @first_day)
-       
+     
     if @first_day_monthly_request.status_monthly == "申請中"
-      if @first_day_monthly_request.selector_monthly_request == 2
-        @status_updated = "上長1に申請中"
-      else @first_day_monthly_request.selector_monthly_request == 3
-        @status_updated = "上長2に申請中"
+      if @first_day_monthly_request.selector_monthly_request == 201
+        @status_updated = "所属長 上長1に申請中"
+      else @first_day_monthly_request.selector_monthly_request == 202
+        @status_updated = "所属長 上長2に申請中"
       end
     elsif @first_day_monthly_request.status_monthly == "承認"
-      if @first_day_monthly_request.selector_monthly_request == 2
-        @status_updated = "上長1に承認されました"
-      else @first_day_monthly_request.selector_monthly_request == 3
-        @status_updated = "上長2が承認されました"
+      if @first_day_monthly_request.selector_monthly_request == 201
+        @status_updated = "所属長 上長1に承認されました"
+      else @first_day_monthly_request.selector_monthly_request == 202
+        @status_updated = "所属長 上長2に承認されました"
       end
     elsif @first_day_monthly_request.status_monthly == "否認"
-      if @first_day_monthly_request.selector_monthly_request == 2
-        @status_updated = "上長1に否認されました"
-      else @first_day_monthly_request.selector_monthly_request == 3
-        @status_updated = "上長2に否認されました"
+      if @first_day_monthly_request.selector_monthly_request == 201
+        @status_updated = "所属長 上長1に否認されました"
+      else @first_day_monthly_request.selector_monthly_request == 202
+        @status_updated = "所属長 上長2に否認されました"
       end
+    else @status_updated = "所属長 承認 未送信"
     end
    
   end
@@ -107,9 +113,9 @@ class UsersController < ApplicationController
   def edit_overtime_approval # 残業申請への返答 表示
     # @userは自身(上長1または上長2)
     @user = User.find(params[:user_id])
-    @users = User.joins(:attendances).group("users.id").where(attendances: { status_overtime: "申請中" })
+    @users = User.joins(:attendances).group("users.id").where(attendances: { selector_overtime_request: @user.employee_number, status_overtime: "申請中" } )
     # 自身宛てのattendanceのみを表示させる
-    @attendances = Attendance.where(selector_overtime_request: @user.id, status_overtime: "申請中")
+    @attendances = Attendance.where(selector_overtime_request: @user.employee_number, status_overtime: "申請中")
     @attendances.each do |attendance|
       attendance.change_overtime = nil
     end
@@ -153,8 +159,8 @@ class UsersController < ApplicationController
   def edit_working_hours_approval
     @user = User.find(params[:user_id])
     # joinsでuserとattendancesを結合させて表示できる。whereでattendancesを絞り込む。
-    @users = User.joins(:attendances).group("users.id").where(attendances: { status_working_hours: "申請中" })
-    @attendances = Attendance.where(selector_working_hours_request: @user.id, status_working_hours: "申請中")
+    @users = User.joins(:attendances).group("users.id").where(attendances: { selector_working_hours_request: @user.employee_number, status_working_hours: "申請中" } )
+    @attendances = Attendance.where(selector_working_hours_request: @user.employee_number, status_working_hours: "申請中")
     @attendances.each do |attendance|
       attendance.change_working_hours = nil
     end
@@ -174,8 +180,8 @@ class UsersController < ApplicationController
           attendance = Attendance.find(id)
           if item[:status_working_hours] == "承認"
             # 以下の値をitemに新たに追加する
-            item[:started_at_before] = attendance.started_at if attendance.started_at.present?
-            item[:finished_at_before] = attendance.finished_at if attendance.finished_at.present?
+            item[:started_at_before] = attendance.started_at if attendance.started_at_before.blank?
+            item[:finished_at_before] = attendance.finished_at if attendance.finished_at_before.blank?
             item[:started_at] = attendance.started_at_edited
             item[:finished_at] = attendance.finished_at_edited
           end
@@ -204,6 +210,12 @@ class UsersController < ApplicationController
 
   def attendance_confirmation
     @worked_sum = @attendances.where.not(started_at: nil).count
+  end
+
+  def attendance_log
+    
+    @user = User.find(params[:id])
+    @attendances = @user.attendances.where(status_working_hours: "承認")
   end
 
   private

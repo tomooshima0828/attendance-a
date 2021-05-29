@@ -22,18 +22,19 @@ Rails.application.routes.draw do
       get 'attendances/edit_one_month'
       # PATCH /users/:id/attendances/update_one_month ユーザーに紐付いた勤怠情報の集合をupdateする
       patch 'attendances/update_one_month'
-      
+
       # PATCH /users/:id/attendances/update_monthly_request
       patch 'attendances/update_monthly_request' # 1ヶ月申請 上長を選択して申請
 
       # GET /users/:id/edit_monthly_approval
-    get 'attendances/edit_monthly_approval' #上長 1ヶ月モーダル 表示
-    # GET /users/:id/update_monthly_approval
-    patch 'attendances/update_monthly_approval' #上長 1ヶ月モーダル 更新
-
+      get 'attendances/edit_monthly_approval' #上長 1ヶ月モーダル 表示
+      # GET /users/:id/update_monthly_approval
+      patch 'attendances/update_monthly_approval' #上長 1ヶ月モーダル 更新
+      # GET /users/:id/attendance_confirmation
       get 'attendance_confirmation'
+      # GET /users/:id/attendance_log
+      get 'attendance_log' # 勤怠ログ(承認済み)
 
-      
     end
     # collectionは:id無し
     # CSVインポート POST /users/import
@@ -56,6 +57,7 @@ Rails.application.routes.draw do
         get 'edit_overtime_request' # 残業申請モーダル
         # PATCH /users/:user_id/attendances/:id/update_overtime_request
         patch 'update_overtime_request' # 残業申請モーダル 更新
+        
       end
     end
     
