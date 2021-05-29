@@ -8,10 +8,11 @@ Rails.application.routes.draw do
   delete '/logout', to: 'sessions#destroy'
 
   resources :branch_offices
-
-  resources :working_employees, only: :index
   
   resources :users do
+    # collectionは:id無し
+    # CSVインポート POST /users/import
+    collection { post :import }
     # memberは:idあり
     member do
       # GET	/users/:id/edit_basic_info
@@ -35,10 +36,14 @@ Rails.application.routes.draw do
       # GET /users/:id/attendance_log
       get 'attendance_log' # 勤怠ログ(承認済み)
 
+      get 'edit_basic_info2'
+
     end
-    # collectionは:id無し
-    # CSVインポート POST /users/import
-    collection { post :import }
+
+    collection do
+      get 'working_employees'
+    end
+    
 
     # GET /users/:user_id/edit_overtime_approval
     get 'edit_overtime_approval' # 上長 残業モーダル

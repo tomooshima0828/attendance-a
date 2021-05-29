@@ -29,6 +29,8 @@ class UsersController < ApplicationController
     # 1ヶ月の出勤回数の合計
     @worked_sum = @attendances.where.not(started_at: nil).count
 
+    @attendance = @user.attendances.find_by(worked_on: @first_day)
+
     # 上長　申請中をカウントして赤字で表示する
     # 上長　自身宛ての申請があり、かつステータスが申請中のときに、その数をカウントする
     if @user.superior?
@@ -215,8 +217,27 @@ class UsersController < ApplicationController
   def attendance_log
     
     @user = User.find(params[:id])
-    @attendances = @user.attendances.where(status_working_hours: "承認")
+    
+    if params["worked_on(1i)"].present? && params["worked_on(2i)"].present?
+      selected_year_and_month = "#{params["worked_on(1i)"]}/#{params["worked_on(2i)"]}"
+      @day = DateTime.parse(selected_year_and_month) if selected_year_and_month.present?
+      @attendances = @user.attendances.where(status_working_hours: "承認").where(worked_on: @day.all_month)
+    else
+      @attendances = @user.attendances.where(status_working_hours: "承認").order("worked_on ASC")
+    end
+
+
   end
+
+  def working_employees
+    @users = User.all
+    
+  end
+
+  def edit_basic_info2
+    
+  end
+
 
   private
 
