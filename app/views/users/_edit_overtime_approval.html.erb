@@ -33,7 +33,8 @@
                         <td><%= $days_of_the_week[day.worked_on.wday] %></td>
                         <td><%= format_basic_info(day.estimated_overtime_hours) %></td>
                         <td><%= format_basic_info(user.designated_work_end_time) %></td>
-                        <td><%= working_times(@user.designated_work_end_time, day.estimated_overtime_hours) if day.estimated_overtime_hours.present? %></td>
+                        <%# 時間外時間 %>
+                        <td><%= working_times_next_day(user.designated_work_end_time, day.estimated_overtime_hours, day.next_day_overtime) %></td>
                         <td><%= day.business_process_content %></td>
                         <td><%= attendance.select :status_overtime, [['申請中'], ['承認'], ['否認'], ['なし']], { include_blank: false, selected: 1 } %></td>
                         <td><%= attendance.check_box :change_overtime, {}, "true", "false" %></td>

@@ -133,7 +133,7 @@
           <td><%= l(day.estimated_overtime_hours, format: :hour) if day.estimated_overtime_hours.present? %></td>
           <td><%= l(day.estimated_overtime_hours, format: :min) if day.estimated_overtime_hours.present? %></td>
           <%# 時間外時間 %>
-          <td><%= working_times(@user.designated_work_end_time, day.estimated_overtime_hours) if day.estimated_overtime_hours.present? %></td>
+          <td><%= working_times_next_day(@user.designated_work_end_time, day.estimated_overtime_hours, day.next_day_overtime) if day.estimated_overtime_hours.present? %></td>
           <td><%= day.business_process_content %></td>
           
           <td>

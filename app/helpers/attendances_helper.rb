@@ -19,6 +19,16 @@ module AttendancesHelper
     format("%.2f", (((finish - start) / 60) / 60.0))
   end
 
+  def working_times_next_day(start, finish, next_day)
+    if next_day == true
+      format("%.2f", ((finish.hour - start.hour) + (finish.min - start.min) / 60.0) + 24)
+    else
+      format("%.2f", (((finish - start) / 60) / 60.0))
+    end
+  end
+
+  
+
   def format_hour(time)
     # 2d == two digits 2桁
     format('%.2d', time.hour)

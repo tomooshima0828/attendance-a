@@ -121,6 +121,7 @@ class UsersController < ApplicationController
   end
 
   def edit_overtime_approval # 残業申請への返答 表示
+    
     # @userは自身(上長1または上長2)
     @user = User.find(params[:user_id])
     @users = User.joins(:attendances).group("users.id").where(attendances: { selector_overtime_request: @user.employee_number, status_overtime: "申請中" } )
@@ -129,6 +130,8 @@ class UsersController < ApplicationController
     @attendances.each do |attendance|
       attendance.change_overtime = nil
     end
+    
+        
   end
 
   def update_overtime_approval # 残業申請への返答 更新
