@@ -64,7 +64,15 @@ class UsersController < ApplicationController
       end
     else @status_updated = "所属長 承認 未送信"
     end
-   
+
+    respond_to do |format|
+      format.html do  
+      end
+      format.csv do
+        send_data render_to_string, filename: "#{@user.name}さんの勤怠一覧.csv", type: :csv
+      end
+    end
+
   end
 
   def new
@@ -230,7 +238,7 @@ class UsersController < ApplicationController
   end
 
   def working_employees
-    @users = User.all
+    @users = User.all.includes(:attendances)
     
   end
 
