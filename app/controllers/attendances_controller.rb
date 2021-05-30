@@ -57,7 +57,6 @@ class AttendancesController < ApplicationController
     @attendance = Attendance.find(params[:id])
     
     if @attendance.update_attributes(overtime_request_params)
-      #@attendance.selector_overtime_request = nil
       
       flash[:success] = "#{@user.name}の残業申請が完了しました。"
     end
