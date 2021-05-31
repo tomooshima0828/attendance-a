@@ -38,7 +38,7 @@
                         <td><%= day.business_process_content %></td>
                         <td><%= attendance.select :status_overtime, [['申請中'], ['承認'], ['否認'], ['なし']], { include_blank: false, selected: 1 } %></td>
                         <td><%= attendance.check_box :change_overtime, {}, "true", "false" %></td>
-                        <td><%= link_to '確認', '#', class: "btn btn-primary" %></td>
+                        <td><%= link_to '確認', attendance_confirmation_user_path(user), class: "btn btn-primary" %></td>
                       </tr>
                     </tbody>
                   <% end %>
