@@ -136,6 +136,7 @@ class UsersController < ApplicationController
 
   def update_overtime_approval # 残業申請への返答 更新
     @user = User.find(params[:user_id]) 
+    
     ActiveRecord::Base.transaction do
       overtime_approval_params.each do |id, item|
         # 「変更」をチェックしたら以下を実行　「変更」にチェックが無い場合は何もしないまま終了
@@ -170,6 +171,7 @@ class UsersController < ApplicationController
   
 
   def edit_working_hours_approval
+    
     @user = User.find(params[:user_id])
     # joinsでuserとattendancesを結合させて表示できる。whereでattendancesを絞り込む。
     @users = User.joins(:attendances).group("users.id").where(attendances: { selector_working_hours_request: @user.employee_number, status_working_hours: "申請中" } )
@@ -181,6 +183,7 @@ class UsersController < ApplicationController
   end
 
   def update_working_hours_approval
+    
     # パラメーターの情報を更新する
     ActiveRecord::Base.transaction do
       # itemにはform_withで入力されたparamsの値が入っている
@@ -217,7 +220,7 @@ class UsersController < ApplicationController
       
   rescue ActiveRecord::RecordInvalid
       flash[:danger] = "無効なデータがあったため、更新をキャンセルしました"
-      redirect_to user_edit_working_hours_approval_path(params[:user_id]) and return
+      redirect_to user_url(params[:user_id]) and return
   end
     
 

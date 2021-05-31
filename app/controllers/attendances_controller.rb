@@ -27,6 +27,7 @@ class AttendancesController < ApplicationController
   end
 
   def edit_one_month
+    
   end
 
   def update_one_month
@@ -49,18 +50,25 @@ class AttendancesController < ApplicationController
   def edit_overtime_request # 残業申請 表示
     @user = User.find(params[:user_id])
     @attendance = Attendance.find(params[:id])
-    @superior = User.where(superior: true).where.not(id: @user)
+    
   end
 
   def update_overtime_request # 残業申請 提出
     @user = User.find(params[:user_id])
     @attendance = Attendance.find(params[:id])
     
+    if overtime_request_params[:next_day_overtime] == "false"
+      if overtime_request_params[:estimated_overtime_hours].to_i < @user.designated_work_end_time.hour
+        flash[:danger] = "残業時間が翌日になる場合は「翌日」をチェックしてください。"
+        redirect_to @user and return
+      end
+    end
+    
     if @attendance.update_attributes(overtime_request_params)
       
       flash[:success] = "#{@user.name}の残業申請が完了しました。"
     end
-    redirect_to @user
+    redirect_to @user and return
   end
 
   # 画面右下の1ヶ月申請ボタンを押したときのアクション
