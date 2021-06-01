@@ -175,7 +175,7 @@ class UsersController < ApplicationController
     @user = User.find(params[:user_id])
     # joinsでuserとattendancesを結合させて表示できる。whereでattendancesを絞り込む。
     @users = User.joins(:attendances).group("users.id").where(attendances: { selector_working_hours_request: @user.employee_number, status_working_hours: "申請中" } )
-    @attendances = Attendance.where(selector_working_hours_request: @user.employee_number, status_working_hours: "申請中")
+    @attendances = Attendance.where(selector_working_hours_request: @user.employee_number, status_working_hours: "申請中").order(worked_on: "ASC")
     @attendances.each do |attendance|
       attendance.change_working_hours = nil
     end
