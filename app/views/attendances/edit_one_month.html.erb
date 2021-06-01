@@ -52,7 +52,13 @@
               </td>
               <td><%= attendance.text_field :note, class: "form-control" %></td>
               <%= attendance.hidden_field :status_working_hours, :value => "申請中" %>
-              <td><%= attendance.select :selector_working_hours_request, { '上長1': 201, '上長2': 202 }, { include_blank: '選択してください' }, { class: "form-control" } %></td>
+              <% if @user.employee_number == 201 %>
+                <td><%= attendance.select :selector_working_hours_request, { '上長2': 202 }, { include_blank: '選択してください' }, { class: "form-control" } %></td>
+              <% elsif @user.employee_number == 202 %>
+                <td><%= attendance.select :selector_working_hours_request, { '上長1': 201 }, { include_blank: '選択してください' }, { class: "form-control" } %></td>
+              <% else %>
+                <td><%= attendance.select :selector_working_hours_request, { '上長1': 201, '上長2': 202 }, { include_blank: '選択してください' }, { class: "form-control" } %></td>
+              <% end %>
             </tr>
           <% end %>
         <% end %>

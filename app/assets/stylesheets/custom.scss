@@ -5,13 +5,8 @@
 
 @font-face {
   font-family: '851';
-  src: font-url('851Gkktt_005.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
+  src: font-url('851Gkktt_005.ttf') ;
 }
-
-
-
 
 body {
   padding-top: 60px;
@@ -40,6 +35,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
+  font-family: '851';
   font-size: 3em;
   letter-spacing: -2px;
   margin-bottom: 30px;
@@ -47,6 +43,7 @@ h1 {
 }
 
 h2 {
+  font-family: '851';
   font-size: 1.2em;
   letter-spacing: -1px;
   margin-bottom: 30px;
@@ -56,6 +53,7 @@ h2 {
 }
 
 p {
+  
   font-size: 1.1em;
   line-height: 1.7em;
 }
@@ -63,6 +61,7 @@ p {
 /* header */
 
 #logo {
+  font-family: '851';
   float: left;
   margin-right: 10px;
   font-size: 1.7em;

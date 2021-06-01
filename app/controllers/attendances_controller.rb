@@ -31,6 +31,7 @@ class AttendancesController < ApplicationController
   end
 
   def update_one_month
+    
     ActiveRecord::Base.transaction do # トランザクションを開始します。
       attendances_params.each do |id, item|
         attendance = Attendance.find(id)
