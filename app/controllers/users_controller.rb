@@ -126,7 +126,7 @@ class UsersController < ApplicationController
     @user = User.find(params[:user_id])
     @users = User.joins(:attendances).group("users.id").where(attendances: { selector_overtime_request: @user.employee_number, status_overtime: "申請中" } )
     # 自身宛てのattendanceのみを表示させる
-    @attendances = Attendance.where(selector_overtime_request: @user.employee_number, status_overtime: "申請中")
+    @attendances = Attendance.where(selector_overtime_request: @user.employee_number, status_overtime: "申請中").order(worked_on: "ASC")
     @attendances.each do |attendance|
       attendance.change_overtime = nil
     end
