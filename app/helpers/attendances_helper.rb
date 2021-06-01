@@ -23,7 +23,7 @@ module AttendancesHelper
     if next_day == true
       format("%.2f", ((finish.hour - start.hour) + (finish.min - start.min) / 60.0) + 24)
     else
-      format("%.2f", (((finish - start) / 60) / 60.0))
+      format("%.2f", ((finish.hour - start.hour) + (finish.min - start.min) / 60.0))
     end
   end
 

@@ -60,9 +60,14 @@ class AttendancesController < ApplicationController
     
     if overtime_request_params[:next_day_overtime] == "false"
       if overtime_request_params[:estimated_overtime_hours].to_i < @user.designated_work_end_time.hour
-        flash[:danger] = "残業時間が翌日になる場合は「翌日」をチェックしてください。"
+        flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。"
         redirect_to @user and return
       end
+    end
+
+    if overtime_request_params[:estimated_overtime_hours].present? && overtime_request_params[:selector_overtime_request].blank?
+      flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。"
+      redirect_to @user and return
     end
     
     if @attendance.update_attributes(overtime_request_params)

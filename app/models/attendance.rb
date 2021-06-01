@@ -9,7 +9,9 @@ class Attendance < ApplicationRecord
   # 出勤・退勤時間どちらも存在する時、出勤時間より早い退勤時間は無効
   validate :started_at_than_finished_at_fast_if_invalid
 
-  validate :all_items_must_be_present
+  validate :all_items_must_be_present_edit_one_month
+
+  
 
 
   def finished_at_is_invalid_without_a_started_at
@@ -30,7 +32,7 @@ class Attendance < ApplicationRecord
     end
   end
 
-  def all_items_must_be_present
+  def all_items_must_be_present_edit_one_month
         
     if (started_at_edited.present? && finished_at_edited.present?) && selector_working_hours_request.blank?
       errors.add(:started_at_edited, "出社時間と退社時間の両方を入力して、上長を選択してください")
@@ -51,5 +53,7 @@ class Attendance < ApplicationRecord
       errors.add(:started_at_edited, "出社時間と退社時間の両方を入力して、上長を選択してください")
     end
   end
+
+  
 
 end
