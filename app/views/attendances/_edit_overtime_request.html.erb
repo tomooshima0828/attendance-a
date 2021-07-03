@@ -23,7 +23,7 @@
             <tr>
               <td><%= l(@attendance.worked_on, format: :short) %></td>
               <td><%= $days_of_the_week[@attendance.worked_on.wday] %></td>
-              <td><%= f.time_field :estimated_overtime_hours, class: "form-control" %></td>
+              <td><%= f.time_field :estimated_overtime_hours, include_blank: true, class: "form-control" %></td>
               <td><%= f.check_box :next_day_overtime, {}, "true", "false" %></td>
               <td><%= f.text_field :business_process_content, class: "form-control" %></td>
               <%= f.hidden_field :status_overtime, :value => "申請中" %>

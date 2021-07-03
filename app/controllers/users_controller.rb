@@ -230,17 +230,14 @@ class UsersController < ApplicationController
 
   def attendance_log
     
-    @user = User.find(params[:id])
-    
-    if params["worked_on(1i)"].present? && params["worked_on(2i)"].present?
-      selected_year_and_month = "#{params["worked_on(1i)"]}/#{params["worked_on(2i)"]}"
-      @day = DateTime.parse(selected_year_and_month) if selected_year_and_month.present?
-      @attendances = @user.attendances.where(status_working_hours: "承認").where(worked_on: @day.all_month)
+    @user = User.find(params[:id]) 
+    if params["worked_on(1i)"].present? && params["worked_on(2i)"].present? # worked_on(1i)は年　worked_on(2i)は月
+      selected_year_and_month = "#{params["worked_on(1i)"]}/#{params["worked_on(2i)"]}" # "2021/05" 
+      @day = DateTime.parse(selected_year_and_month) if selected_year_and_month.present? # @day = Sat, 01 May 2021 00:00:00 +0000
+      @attendances = @user.attendances.where(status_working_hours: "承認").where(worked_on: @day.all_month) # 承認済みをwhereで絞り込む
     else
-      @attendances = @user.attendances.where(status_working_hours: "承認").order("worked_on ASC")
+      @attendances = @user.attendances.where(status_working_hours: "承認").order("worked_on ASC") #全ての承認済みを日付順で出す
     end
-
-
   end
 
   def working_employees

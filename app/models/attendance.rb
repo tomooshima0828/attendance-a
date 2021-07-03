@@ -32,6 +32,8 @@ class Attendance < ApplicationRecord
     end
   end
 
+  
+
   def all_items_must_be_present_edit_one_month
         
     if (started_at_edited.present? && finished_at_edited.present?) && selector_working_hours_request.blank?

@@ -63,7 +63,7 @@
 
   <%= link_to "勤怠編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-primary" %>
   <%= link_to 'CSV出力', user_path(format: :csv), class: "btn btn-primary" %><br>
-  <%= link_to '勤怠修正ログ(承認済)', attendance_log_user_path(@user, @attendance), remote: true, class: "btn btn-primary" %>
+  <%= link_to '勤怠修正ログ(承認済)', attendance_log_user_path(@user), remote: true, class: "btn btn-primary" %>
 </div>
 
 <div>
@@ -184,7 +184,7 @@
         <td>
           
           <%# 1ヶ月所属長承認 %>        
-          <%= form_with(model: @attendances, url: attendances_update_monthly_request_user_path(@user), method: :patch, local: true) do |f| %>
+          <%= form_with(model: @attendance, url: attendances_update_monthly_request_user_path(@user), method: :patch, local: true) do |f| %>
             
             <ul style="list-style: none;">
               <li><%= @status_updated %></li>

@@ -102,10 +102,11 @@ class AttendancesController < ApplicationController
 
   def edit_monthly_approval
     # 上長をパラメーターから取得する
-    @user = User.find(params[:id])
+    @user = User.find(params[:id]) # 上長
     @users = User.joins(:attendances).group("users.id").where(attendances: { selector_monthly_request: @user.employee_number, status_monthly: "申請中" } )
     # 上長のIDと同じ番号のattendance.selector_monthly_requestを取得する
     @attendances = Attendance.where(selector_monthly_request: @user.employee_number, status_monthly: '申請中').order(worked_on: "ASC")
+     
     @attendances.each do |attendance|
       attendance.change_monthly = nil
     end
@@ -115,7 +116,7 @@ class AttendancesController < ApplicationController
     
     ActiveRecord::Base.transaction do
       monthly_approval_params.each do |id, item|
-
+        
         if item[:change_monthly] == "true"
 
           attendance = Attendance.find(id)
