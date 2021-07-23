@@ -23,6 +23,7 @@
             </thead>
             <% @attendances.each do |day| %>
               <%= f.fields_for "attendances[]", day do |d| %>
+              
                 <% if day.user_id == user.id %>
                   <tbody>
                     <tr class="center">

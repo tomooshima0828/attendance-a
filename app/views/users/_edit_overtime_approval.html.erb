@@ -6,8 +6,9 @@
       </button>
       
       <%= form_with(model: @user, url: user_update_overtime_approval_path(@user), method: :patch, local: true) do |f| %>
-        <% @users.each do |user| %> 
-          <p class="center">【<%= user.name %>からの残業申請】</p>
+        <% @attendances.each do |user_id, attendances| %>
+          <% @attendance_user = User.find(user_id) %>
+          <p class="center">【<%= @attendance_user.name %>からの残業申請】</p>
               
             <table class="table table-bordered table-striped table-condensed">
               <thead>
@@ -24,25 +25,25 @@
                 </tr>
               </thead>
 
-              <% @attendances.each do |day| %>
-                <% if day.user_id == user.id %>
-                  <%= f.fields_for "attendances[]", day do |attendance| %>
+              <% attendances.each do |attendance| %>
+                <%# if day.user_id == user.id %>
+                  <%= f.fields_for "attendances[]", attendance do |attn| %>
                     <tbody>
                       <tr class="center">
-                        <td><%= l(day.worked_on, format: :short) %></td>
-                        <td><%= $days_of_the_week[day.worked_on.wday] %></td>
-                        <td><%= format_basic_info(day.estimated_overtime_hours) %></td>
-                        <td><%= format_basic_info(user.designated_work_end_time) %></td>
+                        <td><%= l(attendance.worked_on, format: :short) %></td>
+                        <td><%= $days_of_the_week[attendance.worked_on.wday] %></td>
+                        <td><%= format_basic_info(attendance.estimated_overtime_hours) %></td>
+                        <td><%= format_basic_info(@attendance_user.designated_work_end_time) %></td>
                         <%# 時間外時間 %>
-                        <td><%= working_times_next_day(user.designated_work_end_time, day.estimated_overtime_hours, day.next_day_overtime) %></td>
-                        <td><%= day.business_process_content %></td>
-                        <td><%= attendance.select :status_overtime, [['申請中'], ['承認'], ['否認'], ['なし']], { include_blank: false, selected: 1 } %></td>
-                        <td><%= attendance.check_box :change_overtime, {}, "true", "false" %></td>
-                        <td><%= link_to '確認', attendance_confirmation_user_path(user), class: "btn btn-primary" %></td>
+                        <td><%= working_times_next_day(@attendance_user.designated_work_end_time, attendance.estimated_overtime_hours, attendance.next_day_overtime) %></td>
+                        <td><%= attendance.business_process_content %></td>
+                        <td><%= attn.select :status_overtime, [['申請中'], ['承認'], ['否認'], ['なし']], { include_blank: false, selected: 1 } %></td>
+                        <td><%= attn.check_box :change_overtime, {}, "true", "false" %></td>
+                        <td><%= link_to '確認', attendance_confirmation_user_path(@attendance_user), class: "btn btn-primary" %></td>
                       </tr>
                     </tbody>
                   <% end %>
-                <% end %>
+                <%# end %>
               <% end %>
             </table>
 
