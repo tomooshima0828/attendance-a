@@ -30,7 +30,7 @@ class UsersController < ApplicationController
     @worked_sum = @attendances.where.not(started_at: nil).count
 
     @attendance = @user.attendances.find_by(worked_on: @first_day)
-
+    
     # 上長　申請中をカウントして赤字で表示する
     # 上長　自身宛ての申請があり、かつステータスが申請中のときに、その数をカウントする
     if @user.superior?
