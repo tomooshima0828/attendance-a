@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-
+ruby '2.7.3'
 gem 'rails', '~> 5.1.6'
 gem 'roo'
 gem 'rails-i18n'
@@ -19,6 +19,7 @@ gem 'jbuilder',     '~> 2.5'
 group :development, :test do
   gem 'sqlite3'
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'pry-rails'
 end
 
 group :development do

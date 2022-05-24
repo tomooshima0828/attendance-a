@@ -4,3 +4,8 @@
 require_relative 'config/application'
 
 Rails.application.load_tasks
+
+desc 'Hello, Rake Task'
+task :hello do
+  puts 'Hello, Rake!'
+end
