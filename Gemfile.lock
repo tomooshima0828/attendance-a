@@ -186,7 +186,7 @@ GEM
     will_paginate (3.3.1)
 
 PLATFORMS
-  ruby
+  arm64-darwin-21
   x86_64-darwin-19
 
 DEPENDENCIES
@@ -216,7 +216,7 @@ DEPENDENCIES
   will_paginate
 
 RUBY VERSION
-   ruby 2.7.3p183
+   ruby 2.7.6p219
 
 BUNDLED WITH
-   2.2.27
+   2.3.20
