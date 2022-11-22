@@ -1,11 +1,13 @@
-name: "Ruby RSpec"
+name: Ruby RSpec
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 jobs:
-  rspec-test:
+  test:
     runs-on: ubuntu-latest
 
     steps:
