@@ -5,42 +5,50 @@ on:
   pull_request:
     branches: [ "main" ]
 jobs:
-  test:
+  rspec-test:
     runs-on: ubuntu-latest
-    # services:
-    #   postgres:
-    #     image: postgres:11-alpine
-    #     ports:
-    #       - "5432:5432"
-    #     env:
-    #       POSTGRES_DB: rails_test
-    #       POSTGRES_USER: rails
-    #       POSTGRES_PASSWORD: password
-    # env:
-    #   RAILS_ENV: test
-    #   DATABASE_URL: "postgres://rails:password@localhost:5432/rails_test"
+
     steps:
-      - name: Setup Ruby
-        uses: actions/checkout@v3
-        uses: ruby/setup-ruby@0a29871fe2b0200a17a4497bae54fe5df0d973aa # v1.115.3
-        with:
-          ruby-version: 2.7.6
+    - uses: actions/checkout@v3
 
-      - name: Install Dependencies
-        run: |
-          sudo apt install -yqq libpq-dev
-          gem install bundler
+    - name: Setup Ruby
+      uses: ruby/setup-ruby@ec106b438a1ff6ff109590de34ddc62c540232e0
+      with:
+        ruby-version: 2.7.6
 
-      - name: Install Gems
-        run: |
-          bundle install
+    - name: Check Ruby version
+      run: ruby -v
 
-      - name: Prepare Database
-        run: |
-          bundle exec rails db:prepare
+    - name: Check directory
+      run: |
+        pwd
+        bundler -v
 
-      - name: Run tests
-        env:
-          DATABASE_URL: postgres://postgres@localhost:5432/test.sqlite3
-        run:
-          bundle exec rails test
+    - name: Install sqlite3
+      run: |
+        sudo apt install libsqlite3-dev
+        gem install sqlite3 -v '1.4.2' --source 'https://rubygems.org/'
+        dpkg -L libsqlite3-dev
+
+    - name: Cache gems
+      uses: actions/cache@v2
+      with:
+        path: vendor/bundle
+        key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-gems-
+
+    - name: Install dependencies
+      run: |
+        bundle config path vendor/bundle
+        bundle install --jobs 4 --retry 3
+
+    - name: Setup database
+      run: |
+        mv config/database.org config/database.yml
+        mv config/secrets.org config/secrets.yml
+        bundle exec rails db:migrate RAILS_ENV=test
+
+    - name: Run Rspec
+      run: bundle exec rspec
+      
