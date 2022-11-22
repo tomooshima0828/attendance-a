@@ -19,5 +19,13 @@ module Attn8
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
+    # factory_botファイルを自動生成する際のファイル生成先の指定
+    # "rails g factory_bot:model xxxxx"
+    config.generators do |g|
+      # Railsジェネレータがfactory_bot用のファイルを生成するのを無効化
+      g.factory_bot false
+      # factory_botファイルの生成先をspec/factoriesに変更
+      g.factory_bot dir: 'spec/factories'
+    end
   end
 end

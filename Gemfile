@@ -29,6 +29,12 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
+group :test do
+  gem 'rspec-rails'
+  gem "factory_bot_rails"
+  gem 'capybara'
+end
+
 group :production do
   gem 'pg', '0.20.0'
 end
