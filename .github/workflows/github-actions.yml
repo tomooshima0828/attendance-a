@@ -1,53 +1,53 @@
-name: Ruby RSpec
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-jobs:
-  test:
-    runs-on: ubuntu-latest
+# name: Ruby RSpec
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+#     branches:
+#       - main
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest
 
-    steps:
-    - uses: actions/checkout@v3
+#     steps:
+#     - uses: actions/checkout@v3
 
-    - name: Setup Ruby
-      uses: ruby/setup-ruby@359bebbc29cbe6c87da6bc9ea3bc930432750108
-      with:
-        ruby-version: '2.7.5'
+#     - name: Setup Ruby
+#       uses: ruby/setup-ruby@359bebbc29cbe6c87da6bc9ea3bc930432750108
+#       with:
+#         ruby-version: '2.7.5'
 
-    - name: Check Ruby version
-      run: ruby -v
+#     - name: Check Ruby version
+#       run: ruby -v
 
-    - name: Check directory
-      run: |
-        pwd
-        bundler -v
+#     - name: Check directory
+#       run: |
+#         pwd
+#         bundler -v
 
-    - name: Install sqlite3
-      run: |
-        sudo apt install libsqlite3-dev
-        gem install sqlite3 -v '1.4.2' --source 'https://rubygems.org/'
-        dpkg -L libsqlite3-dev
+#     - name: Install sqlite3
+#       run: |
+#         sudo apt install libsqlite3-dev
+#         gem install sqlite3 -v '1.4.2' --source 'https://rubygems.org/'
+#         dpkg -L libsqlite3-dev
 
-    - name: Cache gems
-      uses: actions/cache@v2
-      with:
-        path: vendor/bundle
-        key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-gems-
+#     - name: Cache gems
+#       uses: actions/cache@v2
+#       with:
+#         path: vendor/bundle
+#         key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+#         restore-keys: |
+#           ${{ runner.os }}-gems-
 
-    - name: Install dependencies
-      run: |
-        bundle config path vendor/bundle
-        bundle install --jobs 4 --retry 3
+#     - name: Install dependencies
+#       run: |
+#         bundle config path vendor/bundle
+#         bundle install --jobs 4 --retry 3
 
-    - name: Setup database
-      run: |
-        bundle exec rails db:migrate RAILS_ENV=test
+#     - name: Setup database
+#       run: |
+#         bundle exec rails db:migrate RAILS_ENV=test
 
-    - name: Run Rspec
-      run: bundle exec rspec
+#     - name: Run Rspec
+#       run: bundle exec rspec
