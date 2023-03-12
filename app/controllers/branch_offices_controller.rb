@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BranchOfficesController < ApplicationController
   before_action :admin_user
 
@@ -16,18 +18,17 @@ class BranchOfficesController < ApplicationController
   def edit
     @branch_office = BranchOffice.find(params[:id])
   end
-  
+
   def update
     @branch_office = BranchOffice.find(params[:id])
     if @branch_office.update(branch_office_params)
-      flash[:success] = "編集に成功しました。"
+      flash[:success] = '編集に成功しました。'
       redirect_to branch_offices_path
     else
-      flash[:danger] = "編集に失敗しました。"
+      flash[:danger] = '編集に失敗しました。'
       render :index
     end
   end
-
 
   def destroy
     @branch_office = BranchOffice.find(params[:id])
@@ -37,8 +38,8 @@ class BranchOfficesController < ApplicationController
   end
 
   private
-    def branch_office_params
-      params.require(:branch_office).permit(:branch_office_name, :branch_office_number, :attendance_type)
-    end
 
+  def branch_office_params
+    params.require(:branch_office).permit(:branch_office_name, :branch_office_number, :attendance_type)
+  end
 end

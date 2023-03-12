@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.configure do |config|
   config.before(:each, type: :system) do
     driven_by :remote_chrome
@@ -32,4 +34,4 @@ Capybara.register_driver :remote_chrome do |app|
     }
   )
   Capybara::Selenium::Driver.new(app, browser: :remote, url: url, desired_capabilities: caps)
-end 
+end

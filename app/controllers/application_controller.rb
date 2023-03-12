@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   # SessionsHelperはどこでも使える
   include SessionsHelper
 
-  $days_of_the_week = %w{日 月 火 水 木 金 土}
+  $days_of_the_week = %w[日 月 火 水 木 金 土]
 
   # beforeフィルター
 
@@ -14,11 +16,11 @@ class ApplicationController < ActionController::Base
 
   # ログイン済みのユーザーか確認します。
   def logged_in_user
-    unless logged_in?
-      store_location
-      flash[:danger] = "ログインしてください。"
-      redirect_to login_url
-    end
+    return if logged_in?
+
+    store_location
+    flash[:danger] = 'ログインしてください。'
+    redirect_to login_url
   end
 
   # アクセスしたユーザーが現在ログインしているユーザーか確認します。
@@ -36,9 +38,12 @@ class ApplicationController < ActionController::Base
   end
 
   # ページ出力前に1ヶ月分のデータの存在を確認・セットします。
-  def set_one_month 
-    @first_day = params[:date].nil? ?
-    Date.current.beginning_of_month : params[:date].to_date
+  def set_one_month
+    @first_day = if params[:date].nil?
+                   Date.current.beginning_of_month
+                 else
+                   params[:date].to_date
+                 end
     @last_day = @first_day.end_of_month
     one_month = [*@first_day..@last_day] # 対象の月の日数を代入します。
     # ユーザーに紐付く一ヶ月分のレコードを検索し取得します。
@@ -49,25 +54,23 @@ class ApplicationController < ActionController::Base
         # 繰り返し処理により、1ヶ月分の勤怠データを生成します。
         one_month.each { |day| @user.attendances.create!(worked_on: day) }
       end
-    @attendances = @user.attendances.where(worked_on: @first_day..@last_day).order(:worked_on)
+      @attendances = @user.attendances.where(worked_on: @first_day..@last_day).order(:worked_on)
     end
-
   rescue ActiveRecord::RecordInvalid # トランザクションによるエラーの分岐です。
-    flash[:danger] = "ページ情報の取得に失敗しました、再アクセスしてください。"
+    flash[:danger] = 'ページ情報の取得に失敗しました、再アクセスしてください。'
     redirect_to root_url
   end
 
   private
 
   def user_params
-    params.require(:user).permit(:name, :email, :affiliation, :password, :password_confirmation, :uid, :employee_number, :basic_work_time, :designated_work_start_time, :designated_work_end_time)
+    params.require(:user).permit(:name, :email, :affiliation, :password, :password_confirmation, :uid,
+                                 :employee_number, :basic_work_time, :designated_work_start_time, :designated_work_end_time)
   end
 
   # ユーザー1名で複数の勤怠を更新する場合はこの書き方で
   def attendances_params
-    params.require(:user).permit(attendances: [:started_at, :finished_at, :started_at_edited, :finished_at_edited, :started_at_before, :finished_at_before, :note, :next_day_working_hours, :selector_working_hours_request, :status_working_hours, :selector_monthly_request])[:attendances]
+    params.require(:user).permit(attendances: %i[started_at finished_at started_at_edited finished_at_edited
+                                                 started_at_before finished_at_before note next_day_working_hours selector_working_hours_request status_working_hours selector_monthly_request])[:attendances]
   end
-  
-
-  
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateAttendances < ActiveRecord::Migration[5.1]
   def change
     create_table :attendances do |t|
@@ -14,17 +16,17 @@ class CreateAttendances < ActiveRecord::Migration[5.1]
 
       t.datetime :estimated_overtime_hours # 終了予定時間 残業申請
       t.string :business_process_content # 業務処理内容 残業申請
-      
+
       t.boolean :next_day_overtime, default: false # 翌日 残業申請
       t.boolean :next_day_working_hours, default: false # 翌日 勤怠編集画面
 
       t.integer :selector_overtime_request, default: 0 # 残業申請の指示者確認　上長(上長1または上長2)が入る
-     
+
       t.integer :selector_working_hours_request, default: 0 # 勤怠変更の指示者確認　上長(上長1または上長2)が入る
-      
+
       t.integer :selector_monthly_request, default: 0 # 1ヶ月分の勤怠変更の指示者確認　上長(上長1または上長2)が入る
       t.date :date_monthly_request
-      
+
       t.boolean :change_overtime, default: false # 変更 残業
       t.boolean :change_working_hours, default: false # 変更 勤怠
       t.boolean :change_monthly, default: false # 変更 1ヶ月
